@@ -1,0 +1,6 @@
+proj
+obj/
+state/
+ale_0.4.4/
+ale_with_obj/
+*.swp
