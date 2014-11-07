@@ -29,10 +29,7 @@ int main(int argc, char** argv)
 
     // set up the emulator and load the rom
     ALEInterface ale;
-    ale.loadROM(rom_file.c_str());
-
-    // get vector of legal actions
-    ActionVect legal_actions = ale.getLegalActionSet();
+    ale.loadROM(rom_file, false, false);
 
     // play 10 episodes
     for(int i=0; i<10; i++)
@@ -41,8 +38,8 @@ int main(int argc, char** argv)
         while(!ale.game_over())
         {
             // choose an action
-            int choice = rand() % legal_actions.size();
-            Action a = legal_actions[choice];
+            int choice = rand() % ale.legal_actions.size();
+            Action a = ale.legal_actions[choice];
             
             // apply the action
             float reward = ale.act(a);

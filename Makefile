@@ -3,7 +3,11 @@
 
 # Only parts you might have to change:
 SRC_FILES = main.cpp
-ALE_DIR = $(shell pwd)/ale_0.4.4/ale_0_4
+ALE_DIR = $(shell pwd)/ale_with_obj
+MAT_DIR = /u/mhollen/sift
+MAT_SDL_DIR = $(MAT_DIR)/SDL
+MAT_HNEAT_DIR = $(MAT_DIR)/HyperNEAT
+# .../lib
 
 
 # specify flags and compiler variables
@@ -21,11 +25,17 @@ SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
 
 # specify libraries, links and include sources
-LIBSO = libale.so
 LIBRARIES = -L$(ALE_DIR)
+# LINUX ONLY: -Wl,-rpath stuff
+LIBRARIES += -Wl,-rpath=$(ALE_DIR)
+LIBRARIES += -Wl,-rpath=$(MAT_SDL_DIR)/lib
+LIBRARIES += -L/u/mhauskn/local/lib
 INCLUDES = -I$(ALE_DIR)/src
+INCLUDES += -I$(MAT_SDL_DIR)/include
 LINKS = -lale -lz
-#LINKS = -pthread -ldl
+LINKS += -lSDL -lSDL_gfx -lSDL_image 
+LINKS += -lboost_thread-mt -lboost_serialization -lboost_system -lboost_filesystem
+#LINKS += -pthread -ldl
 
 
 # specify custom macros
@@ -37,13 +47,6 @@ all: prep compile
 prep:
 	@mkdir -p $(OBJ_DIR)
 
-# if OS X, just make a symlink to the .so file...
-ifeq ($(OS),Darwin)
-	@if [ ! -f "./$(LIBSO)" ]; then ln -s $(ALE_DIR)/$(LIBSO) .; echo "Created symlink to \"$(LIBSO)\"."; fi
-# if on a real Unix system, add the runtime path
-else
-LIBRARIES += -Wl,-rpath=$(ALE_DIR)
-endif
 
 #compile:
 #	$(CXX) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(PATHS) $(SRC) $(LINKS) -o $(EXE) $(PREPROC_VARS)
@@ -62,9 +65,10 @@ clean:
 	@echo "Deleting object files and executable:"
 	rm -f $(EXE)
 	rm -rf $(OBJ_DIR)
-	rm -f $(LIBSO)
 
 
 # Run and debug scripts
 run:
-	@./$(EXE) space_invaders
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	./$(EXE) space_invaders
