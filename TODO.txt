@@ -1,0 +1,5 @@
+TODO:
+- get state information from Mat's ALE object detector.
+- connect state info with the rlglue agent.
+- connect rlglue agent with ALE.
+- have rlglue agent use (theano?) approximator.
