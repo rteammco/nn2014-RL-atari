@@ -69,6 +69,8 @@ compile: $(OBJ)
 	@echo "\nBuilding executable:"
 	$(CXX) $(FLAGS) $(LIBRARIES) $(RPATHS) $? $(LINKS) -o $(EXE)
 	@echo "\nCompilation complete: success!\n"
+	@echo "Run this project by typing: './$(EXE) <rom_name>'"
+	@echo "Or use 'make run' to run example with Space Invaders.\n"
 
 
 # Remove the executable and object files
@@ -80,6 +82,6 @@ clean:
 
 # Run and debug scripts
 run:
-	#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
-	#export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	@#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	@#export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
 	./$(EXE) space_invaders
