@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# git clone ale
+# build ale
+# cp -r roms
+# cp -r images
+# wget rlglue
+# extract rlglue
+# install rlglue

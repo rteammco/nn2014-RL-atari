@@ -2,12 +2,16 @@
 
 
 # Only parts you might have to change:
-SRC_FILES = main.cpp
+SRC_FILES = main.cpp SkeletonAgent.cpp SkeletonEnvironment.cpp
 ALE_DIR = $(shell pwd)/ale_with_obj
+RLGLUE_DIR = $(shell pwd)/rlglue-3.04
+
+
+# Directories for includes and libraries provided by Mat:
 MAT_DIR = /u/mhollen/sift
 MAT_SDL_DIR = $(MAT_DIR)/SDL
 MAT_HNEAT_DIR = $(MAT_DIR)/HyperNEAT
-# .../lib
+MHAUSKN_DIR = /u/mhauskn/local
 
 
 # specify flags and compiler variables
@@ -25,17 +29,23 @@ SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
 
 # specify libraries, links and include sources
-LIBRARIES = -L$(ALE_DIR)
-# LINUX ONLY: -Wl,-rpath stuff
-LIBRARIES += -Wl,-rpath=$(ALE_DIR)
-LIBRARIES += -Wl,-rpath=$(MAT_SDL_DIR)/lib
-LIBRARIES += -L/u/mhauskn/local/lib
-INCLUDES = -I$(ALE_DIR)/src
+INCLUDES  = -I$(ALE_DIR)/src
 INCLUDES += -I$(MAT_SDL_DIR)/include
-LINKS = -lale -lz
+INCLUDES += -I$(RLGLUE_DIR)/include
+LIBRARIES  = -L$(ALE_DIR)
+LIBRARIES += -L$(MHAUSKN_DIR)/lib
+LIBRARIES += -L$(RLGLUE_DIR)/lib
+LINKS  = -lale -lz
 LINKS += -lSDL -lSDL_gfx -lSDL_image 
 LINKS += -lboost_thread-mt -lboost_serialization -lboost_system -lboost_filesystem
-#LINKS += -pthread -ldl
+LINKS += -lrlglue -lrlutils
+
+# specify runtime paths, because apparently it can't locate the libs otherwise
+# NOTE: "-Wl,-rpath=stuff" does not work on OS X
+RPATHS  = -Wl,-rpath=$(ALE_DIR)
+RPATHS += -Wl,-rpath=$(MAT_SDL_DIR)/lib
+RPATHS += -Wl,-rpath=$(MAT_HNEAT_DIR)
+RPATHS += -Wl,-rpath=$(RLGLUE_DIR)/lib
 
 
 # specify custom macros
@@ -49,14 +59,15 @@ prep:
 
 
 #compile:
-#	$(CXX) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(PATHS) $(SRC) $(LINKS) -o $(EXE) $(PREPROC_VARS)
+#	$(CXX) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(RPATHS) $(SRC) $(LINKS) -o $(EXE) $(PREPROC_VARS)
 $(OBJ): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "Compiling $@..."
-	@$(CXX) $(FLAGS) $(INCLUDES) -c -o $@ $< $(PREPROC_VARS)
+	$(CXX) $(FLAGS) $(INCLUDES) -c -o $@ $< $(PREPROC_VARS)
+	@echo "Done."
 
 compile: $(OBJ)
 	@echo "\nBuilding executable:"
-	$(CXX) $(FLAGS) $(LINKS) $(LIBRARIES) $? -o $(EXE)
+	$(CXX) $(FLAGS) $(LIBRARIES) $(RPATHS) $? $(LINKS) -o $(EXE)
 	@echo "\nCompilation complete: success!\n"
 
 
@@ -69,6 +80,6 @@ clean:
 
 # Run and debug scripts
 run:
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
-	export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
+	#export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
 	./$(EXE) space_invaders
