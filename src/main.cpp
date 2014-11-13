@@ -44,14 +44,15 @@ int main(int argc, char** argv)
     // on incorporating RLGlue agent.
 
 
-    // play 10 episodes
-    for(int i=0; i<10; i++)
+    // play n episodes
+    const int num_episodes = 3;
+    for(int i=0; i<num_episodes; i++)
     {
         float total_reward = 0;
 
         while(!ale.game_over())
         {
-            // TODO - here is a map of all the objects:
+            // TODO - here is the map of all objects in the frame:
             // std::map<long,CompositeObject> (id => obj)
             //cout << ale.visProc->composite_objs.size() << endl;
             // struct CompositeObject defined at:
@@ -67,6 +68,8 @@ int main(int argc, char** argv)
         }
 
         cout << "Episode " << (i+1) << ", score = " << total_reward << endl;
+        if(total_reward < 100)
+            cout << "Wow, you really suck." << endl;
         ale.reset_game();
     }
 }
