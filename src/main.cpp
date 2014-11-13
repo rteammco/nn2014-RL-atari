@@ -21,30 +21,6 @@
 using namespace std;
 
 
-// Runtime options and argument strings
-#define ARG_DISP_SCREEN "disp"
-#define FLAG_DISP_SCREEN 1
-#define ARG_PROC_SCREEN "proc"
-#define FLAG_PROC_SCREEN 2
-
-
-// Process arguments and return an options int with all
-// the option flags summed up.
-unsigned int processOptionalArgs(int argc, char** argv)
-{
-    unsigned int options = 0;
-    for(int i=0; i<argc; i++)
-    {
-        string arg = string(argv[i]);
-        if(arg.find(ARG_DISP_SCREEN))
-            options += FLAG_DISP_SCREEN;
-        else if(arg.find(ARG_PROC_SCREEN))
-            options += FLAG_PROC_SCREEN;
-    }
-    return options;
-}
-
-
 int main(int argc, char** argv)
 {
     // set up the rom path
@@ -57,16 +33,10 @@ int main(int argc, char** argv)
     cout << "Loading ROM: " << rom_file << endl;
 
 
-    // set up other argument options
-    unsigned int options = 0;
-    if(argc > 2)
-        options = processOptionalArgs(argc-2, &argv[2]);
-
-
     // set up the emulator and load the rom
     ALEInterface ale;
-    bool disp_screen = options & FLAG_DISP_SCREEN;
-    bool proc_screen = options & FLAG_PROC_SCREEN;
+    bool disp_screen = false;
+    bool proc_screen = true;
     ale.loadROM(rom_file, disp_screen, proc_screen);
 
 
@@ -83,7 +53,7 @@ int main(int argc, char** argv)
         {
             // TODO - here is a map of all the objects:
             // std::map<long,CompositeObject> (id => obj)
-            cout << ale.visProc->composite_objs.size() << endl;
+            //cout << ale.visProc->composite_objs.size() << endl;
             // struct CompositeObject defined at:
             //  ale/src/common/visual_processor.h, 178
 
