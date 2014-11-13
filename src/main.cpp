@@ -4,7 +4,13 @@
  *
  * Add documentation here...
  *
- * NOTE: ROM_DIRECTORY has been pre-defined by the Makefile.
+ * NOTES:
+ * Representation of the screen pixels:
+ *   ale.screen_matrix: IntMatrix === vector< vector<int> >
+ * State:
+ *  ale.game_controller->getState()
+ *
+ * ROM_DIRECTORY has been pre-defined by the Makefile.
  */
 
 #include <iostream>
@@ -15,13 +21,27 @@
 using namespace std;
 
 
-bool isSame(IntMatrix &M, IntMatrix &N)
+// Runtime options and argument strings
+#define ARG_DISP_SCREEN "disp"
+#define FLAG_DISP_SCREEN 1
+#define ARG_PROC_SCREEN "proc"
+#define FLAG_PROC_SCREEN 2
+
+
+// Process arguments and return an options int with all
+// the option flags summed up.
+unsigned int processOptionalArgs(int argc, char** argv)
 {
-    for(int i=0; i<M.size(); i++)
-        for(int j=0; j<3; j++)
-            if(M[i][j] != N[i][j])
-                return false;
-    return true;
+    unsigned int options = 0;
+    for(int i=0; i<argc; i++)
+    {
+        string arg = string(argv[i]);
+        if(arg.find(ARG_DISP_SCREEN))
+            options += FLAG_DISP_SCREEN;
+        else if(arg.find(ARG_PROC_SCREEN))
+            options += FLAG_PROC_SCREEN;
+    }
+    return options;
 }
 
 
@@ -33,45 +53,39 @@ int main(int argc, char** argv)
         cout << "Please provide the name of a rom file." << endl;
         return 0;
     }
-
     string rom_file = string(ROM_DIRECTORY) + "/" + string(argv[1]) + ".bin";
-    cout << rom_file << endl;
+    cout << "Loading ROM: " << rom_file << endl;
 
 
-    /* NOTES:
-     * Representation of the screen pixels:
-     *   ale.screen_matrix: IntMatrix === vector< vector<int> >
-     * State:
-     *  ale.game_controller->getState()
-     */
+    // set up other argument options
+    unsigned int options = 0;
+    if(argc > 2)
+        options = processOptionalArgs(argc-2, &argv[2]);
+
 
     // set up the emulator and load the rom
     ALEInterface ale;
-    ale.loadROM(rom_file, false, true);
+    bool disp_screen = options & FLAG_DISP_SCREEN;
+    bool proc_screen = options & FLAG_PROC_SCREEN;
+    ale.loadROM(rom_file, disp_screen, proc_screen);
 
-    // TODO - test only!
-    // SEE rlglue/examples/skeleton/SkeletonExperiment.c for more info
-    RL_agent_message("sup");
-    const char * task_spec;
-    task_spec = RL_init();
+
+    // TODO: see rlglue/examples/skeleton/SkeletonExperiment.c for more info
+    // on incorporating RLGlue agent.
+
 
     // play 10 episodes
     for(int i=0; i<10; i++)
     {
         float total_reward = 0;
 
-        IntMatrix M = ale.screen_matrix;
-        IntMatrix N = M;
-        cout << M[0][0] << ", " << M[0][1] << endl;
-        int same = 0;
-        int frames = 0;
         while(!ale.game_over())
         {
-            frames++;
-            M = N;
-            N = ale.screen_matrix;
-            if(isSame(M, N))
-                same++;
+            // TODO - here is a map of all the objects:
+            // std::map<long,CompositeObject> (id => obj)
+            cout << ale.visProc->composite_objs.size() << endl;
+            // struct CompositeObject defined at:
+            //  ale/src/common/visual_processor.h, 178
 
             // choose an action
             int choice = rand() % ale.legal_actions.size();
@@ -82,8 +96,8 @@ int main(int argc, char** argv)
             total_reward += reward;
         }
 
-        cout << frames << " frames, " << same << " same." << endl;
         cout << "Episode " << (i+1) << ", score = " << total_reward << endl;
         ale.reset_game();
     }
 }
+
