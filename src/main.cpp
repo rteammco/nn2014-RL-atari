@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         {
             // TODO - here is the map of all objects in the frame:
             // std::map<long,CompositeObject> (id => obj)
-            //cout << ale.visProc->composite_objs.size() << endl;
+            cout << ale.visProc->composite_objs.size() << endl;
             // struct CompositeObject defined at:
             //  ale/src/common/visual_processor.h, 178
 
@@ -65,6 +65,10 @@ int main(int argc, char** argv)
             // apply the action
             float reward = ale.act(a);
             total_reward += reward;
+
+            // TODO - communicatin with python
+            // to py: timestamp, state, action set, reward(t-1)
+            // from py: selected action
         }
 
         cout << "Episode " << (i+1) << ", score = " << total_reward << endl;
