@@ -1,3 +1,0 @@
-TODO:
-- write a pipe to communicate with Python (2.7)
-- send state info and all that stuff, read back action
