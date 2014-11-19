@@ -21,6 +21,9 @@
 
 using namespace std;
 
+typedef map<long,CompositeObject>::iterator ObjMapItr;
+#define OBJECTS ale.visProc->composite_objs
+
 
 #define MESSAGE_START "<IPC_MSG_BEGIN>"
 #define MESSAGE_END "<IPC_MSG_END>"
@@ -45,6 +48,19 @@ void sendPipeMessage(vector<string> lines)
     cout << MESSAGE_END << endl;
 }
 
+int getActionFromPipe()
+{
+    string msg;
+    cin >> msg;
+    while(msg != MESSAGE_START)
+        cin >> msg;
+    cin >> msg;
+    int action = stoi(msg);
+    while(msg != MESSAGE_END)
+        cin >> msg;
+    return action;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -64,6 +80,7 @@ int main(int argc, char** argv)
     bool proc_screen = true;
     ale.loadROM(rom_file, disp_screen, proc_screen);
 
+    // send initial greeting and set of valid actions
     sendPipeMessage("Hello from C++!");
     vector<string> legal_actions;
     for(ActionVect::iterator it = ale.legal_actions.begin();
@@ -74,12 +91,6 @@ int main(int argc, char** argv)
     }
     sendPipeMessage(legal_actions);
 
-    return 0;
-
-    // TODO: see rlglue/examples/skeleton/SkeletonExperiment.c for more info
-    // on incorporating RLGlue agent.
-
-
     // play n episodes
     const int num_episodes = 3;
     for(int i=0; i<num_episodes; i++)
@@ -88,23 +99,31 @@ int main(int argc, char** argv)
 
         while(!ale.game_over())
         {
-            // TODO - here is the map of all objects in the frame:
-            // std::map<long,CompositeObject> (id => obj)
-            cout << ale.visProc->composite_objs.size() << endl;
-            // struct CompositeObject defined at:
-            //  ale/src/common/visual_processor.h, 178
+            // send the state to python
+            vector<string> obj_params;
+            for(ObjMapItr it = OBJECTS.begin(); it != OBJECTS.end(); it++)
+            {
+                CompositeObject &obj = it->second;
+                obj_params.push_back(to_string(obj.id));
+                obj_params.push_back(to_string(obj.x_velocity));
+                obj_params.push_back(to_string(obj.y_velocity));
+                obj_params.push_back(to_string(obj.x_min));
+                obj_params.push_back(to_string(obj.x_max));
+                obj_params.push_back(to_string(obj.y_min));
+                obj_params.push_back(to_string(obj.y_max));
+                obj_params.push_back(to_string(obj.frames_since_last_movement));
+                obj_params.push_back(to_string(obj.age));
+            }
+            sendPipeMessage(obj_params);
 
-            // choose an action
-            int choice = rand() % ale.legal_actions.size();
+            // get an action selection from python
+            int choice = getActionFromPipe();
             Action a = ale.legal_actions[choice];
             
-            // apply the action
+            // apply the action and send back the reward
             float reward = ale.act(a);
+            sendPipeMessage(to_string(reward));
             total_reward += reward;
-
-            // TODO - communicatin with python
-            // to py: timestamp, state, action set, reward(t-1)
-            // from py: selected action
         }
 
         cout << "Episode " << (i+1) << ", score = " << total_reward << endl;

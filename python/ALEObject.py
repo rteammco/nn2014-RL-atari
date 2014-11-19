@@ -28,23 +28,32 @@ class BoundingBox():
     def area(self):
         """Returns the area of this box."""
         return self.width() * self.height()
+    
+    def __str__(self):
+        return "[{}, {}, {}, {}]".format(
+            self.min_x, self.max_x, self.min_y, self.max_y)
 
 
 
 class ALEObject():
     """Defines an object from the ALE emulator with object detection."""
     
-    def __init__(self, unique_id,
-                 vel_x, vel_y,
-                 min_x, max_x, min_y, max_y,
-                 frames_since_last_movement, age):
+    def __init__(self, params):
         """
         Stores all parameters as fields.
         The min/max boundaries are stored as a BoundingBox object.
         """
-        self.unique_id = unique_id
-        self.vel_x = vel_x
-        self.vel_y = vel_y
-        self.box = BoundingBox(min_x, max_x, min_y, max_y)
-        self.frames_since_last_movement = frames_since_last_movement
-        self.age = age
+        self.unique_id = int(params[0])
+        self.vel_x = int(params[1])
+        self.vel_y = int(params[2])
+        self.box = BoundingBox(int(params[3]),
+                               int(params[4]),
+                               int(params[5]),
+                               int(params[6]))
+        self.frames_since_last_movement = int(params[7])
+        self.age = int(params[8])
+
+    def __str__(self):
+        return "Object " + str(self.unique_id) + ": " + str(self.box) + \
+            " -> (" + str(self.vel_x) + ", " + str(self.vel_y) + ")" + \
+            " age = " + str(self.age)
