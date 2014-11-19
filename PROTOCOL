@@ -1,0 +1,51 @@
+# Initially, C++ sends:
+#   - list of valid actions
+# Each frame, C++ sends:
+#   - reward of state at time (t-1)
+#   - list of objects: { id, velocity, bounding_box, frames_since_last_move, age }
+# Python replies:
+#   - action selected
+
+MESSAGE_START   <ICP_MSG_BEGIN>
+MESSAGE_END     <IPC_MSG_END>
+
+STATES cpp {
+    --recv
+    MESSAGE_START
+    GREETING
+    MESSAGE_END
+    --send
+    MESSAGE_START
+    VALID_ACTIONS*
+    MESSAGE_END
+    {
+        --send
+        MESSAGE_START
+        EPISODE_BEGIN
+        MESSAGE_END
+        {
+            --send
+            MESSAGE_START
+            OBJECTS {
+                OBJ_ID
+                OBJ_VEL_X
+                OBJ_VEL_Y
+                OBJ_MIN_X
+                OBJ_MAX_X
+                OBJ_MIN_Y
+                OBJ_MAX_X
+                OBJ_FRAMES_SINCE_LAST_MOVEMENT
+                OBJ_AGE
+            }*
+            MESSAGE_END
+            --recv
+            MESSAGE_START
+            ACTION
+            MESSAGE_END
+            --send
+            MESSAGE_START
+            REWARD
+            MESSAGE_END
+        }*
+    }*
+}
