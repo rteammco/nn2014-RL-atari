@@ -6,3 +6,4 @@ ale_with_obj/
 rlglue-3.04/
 rlglue-3.04.tar.gz
 *.swp
+*.swo

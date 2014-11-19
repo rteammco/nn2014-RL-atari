@@ -17,7 +17,7 @@ MHAUSKN_DIR = /u/mhauskn/local
 # specify flags and compiler variables
 EXE = proj
 CXX = g++
-#FLAGS = -DNDEBUG -g -O3 -ffast-math -fopenmp -std=c++0x
+FLAGS = -std=c++0x
 SRC_DIR = src
 OBJ_DIR = obj
 OS = $(shell uname)

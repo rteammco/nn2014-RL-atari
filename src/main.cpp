@@ -15,10 +15,35 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "ale_interface.hpp"
 #include "rlglue/RL_glue.h"
 
 using namespace std;
+
+
+#define MESSAGE_START "<IPC_MSG_BEGIN>"
+#define MESSAGE_END "<IPC_MSG_END>"
+
+
+void sendPipeMessage(string message)
+{
+    cout << MESSAGE_START << endl;
+    cout << message << endl;
+    cout << MESSAGE_END << endl;
+}
+
+void sendPipeMessage(vector<string> lines)
+{
+    cout << MESSAGE_START << endl;
+    for(vector<string>::iterator it = lines.begin();
+        it != lines.end();
+        it++)
+    {
+        cout << (*it) << endl;
+    }
+    cout << MESSAGE_END << endl;
+}
 
 
 int main(int argc, char** argv)
@@ -39,6 +64,17 @@ int main(int argc, char** argv)
     bool proc_screen = true;
     ale.loadROM(rom_file, disp_screen, proc_screen);
 
+    sendPipeMessage("Hello from C++!");
+    vector<string> legal_actions;
+    for(ActionVect::iterator it = ale.legal_actions.begin();
+        it != ale.legal_actions.end();
+        it++)
+    {
+        legal_actions.push_back(to_string(*it));
+    }
+    sendPipeMessage(legal_actions);
+
+    return 0;
 
     // TODO: see rlglue/examples/skeleton/SkeletonExperiment.c for more info
     // on incorporating RLGlue agent.
