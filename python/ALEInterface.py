@@ -32,10 +32,9 @@ class ALEInterface():
 
     def writeline(self, msg):
         """Writes a single line out through the pipe."""
-        if self.proc is None:
-            return
-        self.proc.stdin.write(msg + "\n")
-        self.proc.stdin.flush()
+        if self.proc is not None:
+            self.proc.stdin.write(msg + "\n")
+            self.proc.stdin.flush()
 
     def readline(self):
         """Returns a line from the pipe with the trailing newline removed."""
@@ -63,12 +62,10 @@ class ALEInterface():
         Sends the given list of messages to the C++ code.
         If you're only sending one message, pass it as a list anyway.
         """
-        if self.proc is not None:
-            self.proc.stdin.write(Protocol.MESSAGE_START + "\n")
-            for msg in messages:
-                self.proc.stdin.write(msg + "\n")
-            self.proc.stdin.write(Protocol.MESSAGE_END + "\n")
-            self.proc.stdin.flush()
+        self.writeline(Protocol.MESSAGE_START)
+        for msg in messages:
+            self.writeline(msg)
+        self.writeline(Protocol.MESSAGE_END)
 
     def connect(self):
         """Establishes connection with the C++ code and receives valid actions."""
