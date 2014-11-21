@@ -17,7 +17,6 @@
 #include <string>
 #include <vector>
 #include "ale_interface.hpp"
-#include "rlglue/RL_glue.h"
 
 using namespace std;
 

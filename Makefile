@@ -2,7 +2,8 @@
 
 
 # Only parts you might have to change:
-SRC_FILES = main.cpp SkeletonAgent.cpp SkeletonEnvironment.cpp
+SRC_FILES = main.cpp
+#SRC_FILES += SkeletonAgent.cpp SkeletonEnvironment.cpp
 ALE_DIR = $(shell pwd)/ale_with_obj
 RLGLUE_DIR = $(shell pwd)/rlglue-3.04
 
@@ -31,21 +32,21 @@ SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 # specify libraries, links and include sources
 INCLUDES  = -I$(ALE_DIR)/src
 INCLUDES += -I$(MAT_SDL_DIR)/include
-INCLUDES += -I$(RLGLUE_DIR)/include
+#INCLUDES += -I$(RLGLUE_DIR)/include
 LIBRARIES  = -L$(ALE_DIR)
 LIBRARIES += -L$(MHAUSKN_DIR)/lib
-LIBRARIES += -L$(RLGLUE_DIR)/lib
+#LIBRARIES += -L$(RLGLUE_DIR)/lib
 LINKS  = -lale -lz
 LINKS += -lSDL -lSDL_gfx -lSDL_image 
 LINKS += -lboost_thread-mt -lboost_serialization -lboost_system -lboost_filesystem
-LINKS += -lrlglue -lrlutils
+#LINKS += -lrlglue -lrlutils
 
 # specify runtime paths, because apparently it can't locate the libs otherwise
 # NOTE: "-Wl,-rpath=stuff" does not work on OS X
 RPATHS  = -Wl,-rpath=$(ALE_DIR)
 RPATHS += -Wl,-rpath=$(MAT_SDL_DIR)/lib
 RPATHS += -Wl,-rpath=$(MAT_HNEAT_DIR)
-RPATHS += -Wl,-rpath=$(RLGLUE_DIR)/lib
+#RPATHS += -Wl,-rpath=$(RLGLUE_DIR)/lib
 
 
 # specify custom macros
