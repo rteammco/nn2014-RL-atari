@@ -4,6 +4,7 @@
 # build ale
 # cp -r roms
 # cp -r images
+# (optionally):
 # wget rlglue
 # extract rlglue
 # install rlglue

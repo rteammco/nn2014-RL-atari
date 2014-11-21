@@ -2,13 +2,8 @@
  *
  * Neural Networks, Fall 2014
  *
- * Add documentation here...
- *
- * NOTES:
- * Representation of the screen pixels:
- *   ale.screen_matrix: IntMatrix === vector< vector<int> >
- * State:
- *  ale.game_controller->getState()
+ * Provides a wrapper to interface with the ALE emulator.
+ * This was hacked together... don't take this code seriously.
  *
  * ROM_DIRECTORY has been pre-defined by the Makefile.
  */

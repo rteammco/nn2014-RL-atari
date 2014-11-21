@@ -13,22 +13,16 @@ The "install_everything" script does not work yet, but the commented pseudocode 
 
 Libraries
 ----------
-The libraries used by this code are the modified ALE library with object detection and RL-glue. The code provides a demo of using both.
+The only library used by this code is the modified ALE library with object detection (which in turn requires SDL).
 
 Makefile
 ----------
-Again, only configured to work on the UTCS machines at this time as it requires dependencies on that system. The makefile will automatically link all libraries, so you don't need to export any paths at runtime. All paths are absolute, so the executable should run anywhere on the system. The only parts that may require updating are the top three values: `SRC_FILES`, `ALE_DIR`, and `RLGLUE_DIR`.
+Again, only configured to work on the UTCS machines at this time as it requires dependencies on that system. The makefile will automatically link all libraries, so you don't need to export any paths at runtime. All paths are absolute, so the executable should run anywhere on the system. The only parts that may require updating are the top three values: `SRC_FILES` and `ALE_DIR`.
 
 Source Code
 ----------
-All original source code is in `src/main.cpp`. The other two files are necessary for RL-glue to compile, and need to be customized when using RL-glue.
+All original source code is in `src/main.cpp` and the `python` directory. The file `python/test.py` provides an example of how to use the `ALEInterface` Python object to communicate with the C++ code which acts as a wrapper for the ALE emulator.
 
 Running the Executable
 ----------
-Everything will be compiled into an executable called `proj`. To run it, you need to specify a game (ROM file). For example,
-
-`./proj space_invaders`
-
-Do not include the ".bin" part of the ROM (this is done automatically). ROMs are expected to be saved in a folder called `roms` in the ALE library's directory.
-
-The current code just runs random actions for 10 games on whatever ROM you load.
+Everything will be compiled into an executable called `proj`. Do not run this file! Use the python `ALEInterface` object to communicate with it (see `python/test.py`).
