@@ -11,7 +11,7 @@ EXEC = "../proj"
 class ALEInterface():
     """Provides an interface to the C++ code through IPC."""
     
-    def __init__(self, rom):
+    def __init__(self, rom, disp_screen = False):
         """
         Tries to open up a subprocess for IPC with the C++ program.
         If successful, interaction will begin with initial data transaction.
@@ -19,16 +19,18 @@ class ALEInterface():
         """
         self.t = 0
         self.valid_actions = []
+        self.game_running = False
         self.cur_state = None
         self.last_reward = None
         cmd = EXEC + " " + rom
         try:
             self.proc = subprocess.Popen(cmd.split(),
                 stdout = subprocess.PIPE, stdin = subprocess.PIPE)
-            self.connect()
+            self.connect(disp_screen)
         except:
             self.proc = None
             print "Error: failed to run command '" + cmd + "'"
+        print "Running", rom, "(screen = " + str(disp_screen) + ")"
 
     def writeline(self, msg):
         """Writes a single line out through the pipe."""
@@ -38,9 +40,10 @@ class ALEInterface():
 
     def readline(self):
         """Returns a line from the pipe with the trailing newline removed."""
-        if self.proc is None:
+        if self.proc is not None:
+            return self.proc.stdout.readline().rstrip()
+        else:
             return ""
-        return self.proc.stdout.readline().rstrip()
 
     def get_next_message(self):
         """
@@ -67,22 +70,27 @@ class ALEInterface():
             self.writeline(msg)
         self.writeline(Protocol.MESSAGE_END)
 
-    def connect(self):
+    def connect(self, disp_screen):
         """Establishes connection with the C++ code and receives valid actions."""
         greeting = self.get_next_message()
         print '\n'.join(greeting)
+        self.send_message(str(disp_screen))
         actions = self.get_next_message()
         self.valid_actions = map(int, actions)
 
     def recv_state(self):
         """Reads a state from C++ and returns the State object."""
-        self.cur_state = State(self.t)
         obj_params = self.get_next_message()
+        if Protocol.END_GAME in obj_params:
+            self.game_running = False
+            return False
+        self.cur_state = State(self.t)
         num_objs = len(obj_params)/9 # TODO - define 9 elsewhere
         for i in range(num_objs):
             obj = ALEObject(obj_params[i:i+9])
             self.cur_state.add_object(obj)
         self.t += 1
+        return True
 
     def send_action_get_reward(self, action):
         """Sends the selected action and gets the reward."""
@@ -105,5 +113,20 @@ class ALEInterface():
         Returns the current game state at time t and the reward at previous
         time t-1 as a tuple.
         """
-        self.recv_state()
-        return self.cur_state, self.last_reward
+        if not self.recv_state():
+            return None, None
+        else:
+            return self.cur_state, self.last_reward
+
+    def start_new_game(self):
+        """Tells the C++ code to start a new game (until game over)."""
+        self.send_message([Protocol.START_GAME])
+        self.game_running = True
+
+    def close(self):
+        """Closes the pipe (if it exists) and cleans up."""
+        if self.proc is not None:
+            self.send_message([Protocol.END_GAME])
+            self.proc.terminate()
+            self.proc = None
+            self.game_running = False

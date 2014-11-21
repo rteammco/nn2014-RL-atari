@@ -8,21 +8,25 @@
 
 MESSAGE_START   <ICP_MSG_BEGIN>
 MESSAGE_END     <IPC_MSG_END>
+START_GAME      <START_GAME>
+END_GAME        <END_GAME>
 
 STATES cpp {
+    --send
+    MESSAGE_START
+    greetings
+    MESSAGE_END
     --recv
     MESSAGE_START
-    GREETING
+    use_screen
     MESSAGE_END
     --send
     MESSAGE_START
-    VALID_ACTIONS*
+    valid_actions*
     MESSAGE_END
     {
-        --send
-        MESSAGE_START
-        EPISODE_BEGIN
-        MESSAGE_END
+        --recv
+        START_GAME
         {
             --send
             MESSAGE_START
@@ -47,5 +51,9 @@ STATES cpp {
             REWARD
             MESSAGE_END
         }*
+        --send
+        MESSAGE_START
+        END_GAME
+        MESSAGE_END
     }*
 }
