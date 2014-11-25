@@ -1,0 +1,15 @@
+VisualProcessor has an option to detect the player controlled object.
+    - This isn't detected with certainty.
+    - May or may not be found.
+
+Objects matched exactly.
+    - Partially occluded objects are not identified.
+
+Some objects are undetected in later levels of certain games.
+    - Asterix, Beam Rider, Phoenix.
+
+Substraits (object classes) are available, too.
+    - Each class (Prototype) has a list of object IDs.
+
+VisualProcessor also provides a raw downscaled pixel representation.
+    - Reduces number of colors.

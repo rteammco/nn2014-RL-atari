@@ -1,13 +1,25 @@
 #!/bin/bash
 
-# git clone ale
-# build ale
-# cp -r roms
-# cp -r images
+ALE_DIR="ale_with_obj"
+
+# if already installed, SHOW WARNING first
+if [ -d "$ALE_DIR" ];
+then
+    echo "You already installed this. Remove files to try again."
+    exit
+fi
+
+echo "Installing into $ALE_DIR..."
+git clone https://github.com/Greuseome/Arcade-Learning-Environment.git
+mv Arcade-Learning-Environment $ALE_DIR
+cd $ALE_DIR
+make -j 2
+cp -r /u/mhollen/sift/ale-assets/roms .
+cp -r /u/mhollen/sift/ale-assets/images .
 # (optionally):
 # wget rlglue
 # extract rlglue
 # install rlglue
 
 # ALSO do:
-# copy Mat's stuff over
+# copy Mat's stuff over? HUGE directories, see Makefile for directory info
