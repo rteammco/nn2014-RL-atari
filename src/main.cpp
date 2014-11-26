@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include "ale_interface.hpp"
+#include "ipc.h"
 
 using namespace std;
 
@@ -19,81 +20,25 @@ typedef map<long,CompositeObject>::iterator ObjMapItr;
 #define OBJECTS ale.visProc->composite_objs
 
 
-#define MESSAGE_START "<IPC_MSG_BEGIN>"
-#define MESSAGE_END "<IPC_MSG_END>"
-#define GAME_START "<START_GAME>"
-#define GAME_END "<END_GAME>"
-
-
-void sendPipeMessage(string message)
-{
-    cout << MESSAGE_START << endl;
-    cout << message << endl;
-    cout << MESSAGE_END << endl;
-}
-
-void sendPipeMessage(vector<string> lines)
-{
-    cout << MESSAGE_START << endl;
-    for(vector<string>::iterator it = lines.begin();
-        it != lines.end();
-        it++)
-    {
-        cout << (*it) << endl;
-    }
-    cout << MESSAGE_END << endl;
-}
-
-string getMessageFromPipe()
-{
-    string msg;
-    cin >> msg;
-    while(msg != MESSAGE_START) {
-        cin >> msg;
-    }
-    cin >> msg;
-    return msg;
-}
-
-int getActionFromPipe()
-{
-    return stoi(getMessageFromPipe());
-}
-
-bool getBoolMessageFromPipe()
-{
-    if(getMessageFromPipe() == "True")
-        return true;
-    else
-        return false;
-}
-
-bool isGameStartingFromPipe()
-{
-    if(getMessageFromPipe() == GAME_START)
-        return true;
-    else
-        return false;
-}
-
-
 int main(int argc, char** argv)
 {
+    ALEComm comm(true);
+
     // set up the rom path
     if(argc < 2)
     {
         cout << "Please provide the name of a rom file." << endl;
-        sendPipeMessage("Failed to load: no arguments.");
+        comm.sendMessage("Failed to load: no arguments.");
         return 0;
     }
     string rom_file = string(ROM_DIRECTORY) + "/" + string(argv[1]) + ".bin";
 
-    sendPipeMessage("Hello from C++!");
+    comm.sendMessage("Hello from C++!");
     cout << "Loading ROM: " << rom_file << endl;
 
     // set up the emulator and load the rom
     ALEInterface ale;
-    bool disp_screen = getBoolMessageFromPipe();
+    bool disp_screen = comm.getBool();
     bool proc_screen = true;
     ale.loadROM(rom_file, disp_screen, proc_screen);
 
@@ -105,11 +50,11 @@ int main(int argc, char** argv)
     {
         legal_actions.push_back(to_string(*it));
     }
-    sendPipeMessage(legal_actions);
+    comm.sendMessage(legal_actions);
 
     // play n episodes
     int episode = 0;
-    while(isGameStartingFromPipe())
+    while(comm.isGameStarting())
     {
         cout << "Game starting." << endl;
         episode++;
@@ -131,15 +76,15 @@ int main(int argc, char** argv)
                 obj_params.push_back(to_string(obj.frames_since_last_movement));
                 obj_params.push_back(to_string(obj.age));
             }
-            sendPipeMessage(obj_params);
+            comm.sendMessage(obj_params);
 
             // get an action selection from python
-            int choice = getActionFromPipe();
+            int choice = comm.getAction();
             Action a = ale.legal_actions[choice];
             
             // apply the action and send back the reward
             float reward = ale.act(a);
-            sendPipeMessage(to_string(reward));
+            comm.sendMessage(to_string(reward));
             total_reward += reward;
         }
 
@@ -147,7 +92,7 @@ int main(int argc, char** argv)
         if(total_reward < 100)
             cout << "Wow, you really suck." << endl;
         ale.reset_game();
-        sendPipeMessage(GAME_END);
+        comm.sendMessage(GAME_END);
     }
 }
 

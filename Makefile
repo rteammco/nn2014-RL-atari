@@ -2,7 +2,7 @@
 
 
 # Only parts you might have to change:
-SRC_FILES = main.cpp
+SRC_FILES = main.cpp ipc.cpp
 #SRC_FILES += SkeletonAgent.cpp SkeletonEnvironment.cpp
 ALE_DIR = $(shell pwd)/ale_with_obj
 RLGLUE_DIR = $(shell pwd)/rlglue-3.04
