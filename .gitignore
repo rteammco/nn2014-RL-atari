@@ -1,6 +1,7 @@
 proj
 obj/
 state/
+pybrain/
 ale_0.4.4/
 ale_with_obj/
 rlglue-3.04/
