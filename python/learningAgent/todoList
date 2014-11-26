@@ -1,0 +1,15 @@
+CS394N Final Project
+Reinforcement Learning Agent Part
+
+1. An agent class that based on RL-glue
+-state: from ALE
+-action: from ALE
+-reward: from ALE
+-t: use q-learning, do not estimate explicitly
+-gamma: parameter 
+
+
+2. Learning algorithm (a neural network) using pyBrain
+-SGD-Q algorithm
+
+

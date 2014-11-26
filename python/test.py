@@ -22,12 +22,19 @@ actions = interface.get_valid_actions()
 
 interface.start_new_game()
 frame = 0
+#A new agent here
+
 while True:
     s, r = interface.get_state_and_reward()
+    #pass s,r to agent
+
+
     if not interface.game_running:
         break
     if frame % 100 == 0:
         print s
+    
+    #agent make decisions
     a = random.choice(actions)
     interface.do_action(a)
     frame += 1
