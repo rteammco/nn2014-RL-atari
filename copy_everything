@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# DOESN'T WORK:
+# This is a list of dependencies on the UTCS machines.
+
+/u/mhauskn/local/lib
+/u/mhollen/sift/SDL/include
+/u/mhollen/sift/ale-assets/roms
+/u/mhollen/sift/ale-assets/images
+/u/mhollen/sift/SDL/lib
+/u/mhollen/sift/HyperNEAT/SDL2_image-2.0.0
