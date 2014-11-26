@@ -16,6 +16,8 @@ cd $ALE_DIR
 make -j 2
 cp -r /u/mhollen/sift/ale-assets/roms .
 cp -r /u/mhollen/sift/ale-assets/images .
+cd ..
+make
 # (optionally):
 # wget rlglue
 # extract rlglue
