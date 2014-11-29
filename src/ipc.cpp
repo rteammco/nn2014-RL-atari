@@ -51,7 +51,7 @@ string ALEComm::getMessage()
 int ALEComm::getAction()
 {
     if(!enabled)
-        return -1;
+        return 0;
     return stoi(getMessage());
 }
 
@@ -72,7 +72,7 @@ bool ALEComm::getBool()
 bool ALEComm::isGameStarting()
 {
     if(!enabled)
-        return false;
+        return true;
     if(getMessage() == GAME_START)
         return true;
     else

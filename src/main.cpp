@@ -22,7 +22,11 @@ typedef map<long,CompositeObject>::iterator ObjMapItr;
 
 int main(int argc, char** argv)
 {
-    ALEComm comm(true);
+    bool enable_comm = true;
+    if(argc > 2 && string(argv[2]) == "-test")
+        enable_comm = false;
+    ALEComm comm(enable_comm);
+    bool testing = !enable_comm;
 
     // set up the rom path
     if(argc < 2)
@@ -59,6 +63,7 @@ int main(int argc, char** argv)
         cout << "Game starting." << endl;
         episode++;
         float total_reward = 0;
+        int frame = 0;
         while(!ale.game_over())
         {
             // send the state to python
@@ -78,6 +83,13 @@ int main(int argc, char** argv)
             }
             comm.sendMessage(obj_params);
 
+            // if self is known, send that
+            if(testing && ale.visProc->found_self())
+            {
+                cout << "Found self!" << endl;
+                cout << ale.visProc->self_id << endl;
+            }
+
             // get an action selection from python
             int choice = comm.getAction();
             Action a = ale.legal_actions[choice];
@@ -86,6 +98,11 @@ int main(int argc, char** argv)
             float reward = ale.act(a);
             comm.sendMessage(to_string(reward));
             total_reward += reward;
+            if(testing)
+            {
+                cout << "Test frame " << frame << endl;
+            }
+            frame++;
         }
 
         cout << "Episode " << (episode) << ", score = " << total_reward << endl;
