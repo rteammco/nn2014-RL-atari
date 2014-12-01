@@ -23,6 +23,8 @@ class ALEInterface():
         self.cur_state = None
         self.last_reward = None
         self.disp_screen = disp_screen
+        self.screen_width = 0
+        self.screen_height = 0
         cmd = EXEC + " " + rom
         try:
             self.proc = subprocess.Popen(cmd.split(),
@@ -79,10 +81,9 @@ class ALEInterface():
         actions = self.get_next_message()
         self.valid_actions = map(int, actions)
         if disp_screen:
-            width = self.get_next_message()
-            height = self.get_next_message()
-            print width, height
-        exit(0)
+            print "waiting..."
+            self.screen_width = int(self.get_next_message()[0])
+            self.screen_height = int(self.get_next_message()[0])
 
     def recv_state(self):
         """Reads a state from C++ and returns the State object."""
@@ -124,6 +125,10 @@ class ALEInterface():
         else:
             return self.cur_state, self.last_reward
     
+    def get_screen_dimensions(self):
+        """Returns the width and height of the ALE screen."""
+        return self.screen_width, self.screen_height
+
     def get_pixels(self):
         """
         If screen is enabled, reads pixel values from the C++ code and

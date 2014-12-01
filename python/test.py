@@ -21,12 +21,15 @@ else:
 
 interface = ALEInterface(game, disp_screen)
 actions = interface.get_valid_actions()
+if disp_screen:
+    width, height = interface.get_screen_dimensions()
+    fi = FrameImage(width, height)
+    print "Initialized window with dimensions", width, "X", height
 
 interface.start_new_game()
 frame = 0
 #A new agent here
 
-fi = FrameImage(250, 120) # TODO w/h of window?
 while True:
     s, r = interface.get_state_and_reward()
     #pass s,r to agent
@@ -46,4 +49,5 @@ while True:
     frame += 1
 
 interface.close()
-fi.close()
+if disp_screen:
+    fi.close()

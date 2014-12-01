@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     if(!testing)
         disp_screen = comm.getBool();
     bool proc_screen = true;
-    ale.loadROM(rom_file, disp_screen, proc_screen);
+    ale.loadROM(rom_file, false, proc_screen); // TODO - second param disp_screen?
 
     // send initial greeting and set of valid actions
     vector<string> legal_actions;
@@ -64,6 +64,8 @@ int main(int argc, char** argv)
         comm.sendMessage(to_string(ale.screen_width));
         comm.sendMessage(to_string(ale.screen_height));
     }
+    else
+        cerr << "FAIL" << endl;
 
     // play n episodes
     int episode = 0;
