@@ -115,7 +115,7 @@ int main(int argc, char** argv)
                         {
                             uInt8 pixel = ale.screen_matrix[x][y];
                             if(pixel > 0)
-                                cout << "X";
+                                cout << pixel / 26;
                             else
                                 cout << " ";
                         }
