@@ -9,3 +9,4 @@ rlglue-3.04.tar.gz
 *.pyc
 *.swp
 *.swo
+*.nfs

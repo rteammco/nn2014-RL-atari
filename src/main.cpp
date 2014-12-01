@@ -42,7 +42,9 @@ int main(int argc, char** argv)
 
     // set up the emulator and load the rom
     ALEInterface ale;
-    bool disp_screen = comm.getBool();
+    bool disp_screen = true;
+    if(!testing)
+        disp_screen = comm.getBool();
     bool proc_screen = true;
     ale.loadROM(rom_file, disp_screen, proc_screen);
 
@@ -100,7 +102,21 @@ int main(int argc, char** argv)
             total_reward += reward;
             if(testing)
             {
-                cout << "Test frame " << frame << endl;
+                if(reward != 0)
+                cout << "Test frame " << frame << ", reward = "
+                     << reward << endl;
+                /*for(int y=0; y<ale.screen_height; y++)
+                {
+                    for(int x=0; x<ale.screen_width; x++)
+                    {
+                        if(ale.screen_matrix[x][y] > 0)
+                            cout << "X";
+                        else
+                            cout << " ";
+                    }
+                    cout << endl;
+                }
+                cout << "------------" << endl;*/
             }
             frame++;
         }
@@ -110,6 +126,8 @@ int main(int argc, char** argv)
             cout << "Wow, you really suck." << endl;
         ale.reset_game();
         comm.sendMessage(GAME_END);
+        if(testing)
+            break;
     }
 }
 
