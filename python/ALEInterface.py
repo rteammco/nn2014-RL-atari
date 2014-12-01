@@ -78,6 +78,11 @@ class ALEInterface():
         self.send_message(str(disp_screen))
         actions = self.get_next_message()
         self.valid_actions = map(int, actions)
+        if disp_screen:
+            width = self.get_next_message()
+            height = self.get_next_message()
+            print width, height
+        exit(0)
 
     def recv_state(self):
         """Reads a state from C++ and returns the State object."""

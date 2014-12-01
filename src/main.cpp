@@ -58,6 +58,13 @@ int main(int argc, char** argv)
     }
     comm.sendMessage(legal_actions);
 
+    // if displaying screen, also send screen width and height
+    if(disp_screen)
+    {
+        comm.sendMessage(to_string(ale.screen_width));
+        comm.sendMessage(to_string(ale.screen_height));
+    }
+
     // play n episodes
     int episode = 0;
     while(comm.isGameStarting())
