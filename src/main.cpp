@@ -94,6 +94,8 @@ int main(int argc, char** argv)
 
             // get an action selection from python
             int choice = comm.getAction();
+            if(testing)
+                choice = rand() % legal_actions.size();
             Action a = ale.legal_actions[choice];
             
             // apply the action and send back the reward
