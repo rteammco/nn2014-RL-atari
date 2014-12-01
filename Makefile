@@ -85,4 +85,4 @@ clean:
 run:
 	@#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
 	@#export LIBRARY_PATH=$LIBRARY_PATH:$(MAT_SDL_DIR)/lib:$(MAT_HNEAT_DIR)/SDL2_image-2.0.0
-	./$(EXE) space_invaders -test
+	./$(EXE) pong -test

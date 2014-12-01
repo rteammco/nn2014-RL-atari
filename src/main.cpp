@@ -105,20 +105,24 @@ int main(int argc, char** argv)
             if(testing)
             {
                 if(reward != 0)
-                cout << "Test frame " << frame << ", reward = "
-                     << reward << endl;
-                /*for(int y=0; y<ale.screen_height; y++)
+                    cout << "Test frame " << frame << ", reward = "
+                         << reward << endl;
+                /*if(frame % 100 == 0)
                 {
-                    for(int x=0; x<ale.screen_width; x++)
+                    for(int y=0; y<ale.screen_height; y++)
                     {
-                        if(ale.screen_matrix[x][y] > 0)
-                            cout << "X";
-                        else
-                            cout << " ";
+                        for(int x=0; x<ale.screen_width; x++)
+                        {
+                            uInt8 pixel = ale.screen_matrix[x][y];
+                            if(pixel > 0)
+                                cout << "X";
+                            else
+                                cout << " ";
+                        }
+                        cout << endl;
                     }
-                    cout << endl;
-                }
-                cout << "------------" << endl;*/
+                    cout << "------------" << endl;
+                }*/
             }
             frame++;
         }
