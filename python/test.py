@@ -27,16 +27,13 @@ frame = 0
 #A new agent here
 
 fi = FrameImage(250, 120) # TODO w/h of window?
-fi.display(fi.get_rand_pixels())
-fi.wait()
 while True:
     s, r = interface.get_state_and_reward()
     #pass s,r to agent
 
-    # TODO - change to actual pixel values
-    fi.display(fi.get_rand_pixels())
-    fi.snooze()
-    #fi.wait()
+    if disp_screen:
+        pixels = interface.get_pixels()
+        fi.display(pixels)
 
     if not interface.game_running:
         break

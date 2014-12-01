@@ -47,8 +47,11 @@ class FrameImage():
         cv2.waitKey(1)
 
     def display(self, pixels):
+        if pixels is None:
+            return
         image = self.get_image_from_pixels(pixels)
         cv2.imshow(self.WINDOW_NAME, image)
+        self.snooze() # needs to call to update correctly
 
     def close(self):
         cv2.destroyAllWindows()

@@ -22,6 +22,7 @@ class ALEInterface():
         self.game_running = False
         self.cur_state = None
         self.last_reward = None
+        self.disp_screen = disp_screen
         cmd = EXEC + " " + rom
         try:
             self.proc = subprocess.Popen(cmd.split(),
@@ -117,6 +118,17 @@ class ALEInterface():
             return None, None
         else:
             return self.cur_state, self.last_reward
+    
+    def get_pixels(self):
+        """
+        If screen is enabled, reads pixel values from the C++ code and
+        returns the pixel list. If not enabled, returns None.
+        """
+        if not self.disp_screen:
+            return None
+        pix_str = self.get_next_message()
+        pixels = map(int, pix_str.split())
+        return pixels
 
     def start_new_game(self):
         """Tells the C++ code to start a new game (until game over)."""
