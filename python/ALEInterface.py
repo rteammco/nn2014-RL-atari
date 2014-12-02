@@ -56,7 +56,6 @@ class ALEInterface():
         line = self.readline()
         while line != Protocol.MESSAGE_START:
             line = self.readline()
-            print line
         message = []
         line = self.readline()
         while line != Protocol.MESSAGE_END:
@@ -92,9 +91,10 @@ class ALEInterface():
             self.game_running = False
             return False
         self.cur_state = State(self.t)
-        num_objs = len(obj_params)/9 # TODO - define 9 elsewhere
+        num_objs = len(obj_params)/9 # TODO - define 9 elsewhere?
         for i in range(num_objs):
-            obj = ALEObject(obj_params[i:i+9])
+            obj_indx = i*9
+            obj = ALEObject(obj_params[obj_indx:obj_indx+9])
             self.cur_state.add_object(obj)
         self.t += 1
         return True
