@@ -102,7 +102,7 @@ class ALEInterface():
     def send_action_get_reward(self, action):
         """Sends the selected action and gets the reward."""
         self.send_message([str(action)])
-        self.last_reward = self.get_next_message()
+        self.last_reward = float(self.get_next_message()[0])
 
     def get_valid_actions(self):
         """Returns a list of valid actions."""
