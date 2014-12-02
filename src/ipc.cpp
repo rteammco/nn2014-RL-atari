@@ -43,7 +43,7 @@ string ALEComm::getMessage()
         cin >> msg;
     }
     cin >> msg;
-    cerr << "GOT MESSAGE: " << msg << endl;
+    //cerr << "GOT MESSAGE: " << msg << endl;
     // TODO - buggy (only gets first letter?)
     return msg;
 }

@@ -24,7 +24,6 @@ actions = interface.get_valid_actions()
 if disp_screen:
     width, height = interface.get_screen_dimensions()
     fi = FrameImage(width, height)
-    print "Initialized window with dimensions", width, "X", height
 
 interface.start_new_game()
 frame = 0

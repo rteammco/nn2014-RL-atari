@@ -64,8 +64,6 @@ int main(int argc, char** argv)
         comm.sendMessage(to_string(ale.screen_width));
         comm.sendMessage(to_string(ale.screen_height));
     }
-    else
-        cerr << "FAIL" << endl;
 
     // play n episodes
     int episode = 0;
@@ -101,6 +99,21 @@ int main(int argc, char** argv)
                 cout << ale.visProc->self_id << endl;
             }
 
+            // if displaying screen and not testing, send all the pixel values
+            if(disp_screen && enable_comm)
+            {
+                string pixels = "";
+                for(int y=0; y<ale.screen_height; y++)
+                {
+                    for(int x=0; x<ale.screen_width; x++)
+                    {
+                        uInt8 pixel = ale.screen_matrix[x][y];
+                        pixels += to_string(pixel) + " ";
+                    }
+                }
+                comm.sendMessage(pixels);
+            }
+
             // get an action selection from python
             int choice = comm.getAction();
             if(testing)
@@ -132,20 +145,6 @@ int main(int argc, char** argv)
                     }
                     cout << "------------" << endl;
                 }*/
-            }
-            // if displaying screen and not testing, send all the pixel values
-            if(disp_screen && enable_comm)
-            {
-                string pixels = "";
-                for(int y=0; y<ale.screen_height; y++)
-                {
-                    for(int x=0; x<ale.screen_width; x++)
-                    {
-                        uInt8 pixel = ale.screen_matrix[x][y];
-                        pixels += to_string(pixel) + " ";
-                    }
-                    comm.sendMessage(pixels);
-                }
             }
             frame++;
         }

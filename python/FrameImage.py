@@ -13,6 +13,7 @@ class FrameImage():
         self.width = width
         self.height = height
         cv2.namedWindow(self.WINDOW_NAME)
+        print "Initialized window with dimensions", width, "X", height
 
     # src: http://stackoverflow.com/questions/9710520/opencv-createimage-function-isnt-working
     def create_blank_image(self, rgb_color=(0, 0, 0)):

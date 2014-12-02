@@ -56,6 +56,7 @@ class ALEInterface():
         line = self.readline()
         while line != Protocol.MESSAGE_START:
             line = self.readline()
+            print line
         message = []
         line = self.readline()
         while line != Protocol.MESSAGE_END:
@@ -81,7 +82,6 @@ class ALEInterface():
         actions = self.get_next_message()
         self.valid_actions = map(int, actions)
         if disp_screen:
-            print "waiting..."
             self.screen_width = int(self.get_next_message()[0])
             self.screen_height = int(self.get_next_message()[0])
 
@@ -136,7 +136,7 @@ class ALEInterface():
         """
         if not self.disp_screen:
             return None
-        pix_str = self.get_next_message()
+        pix_str = self.get_next_message()[0]
         pixels = map(int, pix_str.split())
         return pixels
 
