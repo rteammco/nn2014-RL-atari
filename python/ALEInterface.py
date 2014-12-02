@@ -88,12 +88,17 @@ class ALEInterface():
     def recv_state(self):
         """Reads a state from C++ and returns the State object."""
         obj_params = self.get_next_message()
+        print "OBJECTS:"
+        print obj_params
+        print "(len) =", len(obj_params)
         if Protocol.END_GAME in obj_params:
             self.game_running = False
             return False
         self.cur_state = State(self.t)
         num_objs = len(obj_params)/9 # TODO - define 9 elsewhere
+        print "Num objects:", num_objs
         for i in range(num_objs):
+            print "obj:", i+1, obj_params[i:i+9]
             obj = ALEObject(obj_params[i:i+9])
             self.cur_state.add_object(obj)
         self.t += 1
@@ -102,7 +107,9 @@ class ALEInterface():
     def send_action_get_reward(self, action):
         """Sends the selected action and gets the reward."""
         self.send_message([str(action)])
+        print "SENT ACTION:", action
         self.last_reward = self.get_next_message()
+        print "GOT NEW REWARD:", self.last_reward
 
     def get_valid_actions(self):
         """Returns a list of valid actions."""
@@ -137,6 +144,7 @@ class ALEInterface():
         if not self.disp_screen:
             return None
         pix_str = self.get_next_message()[0]
+        print "GOT PIXEL MAP"
         pixels = map(int, pix_str.split())
         return pixels
 
