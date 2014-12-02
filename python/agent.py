@@ -60,14 +60,14 @@ def process_state(old_state, raw_state):
     is_valid_frame = False
     
     for i in range(len(raw_state.objects)):
-        x,y = raw_state.objects[i].box.center
+        x,y = raw_state.objects[i].box.center()
 	velX, velY = raw_state.objects[i].vel_x, raw_state.objects[i].vel_y
 	#The player: playerX should be near 140 and velX should be 0
 	if abs(x - 140) <= 1 and velX == 0: #empirical values
 	    playerX, playerY = x, y
 	    valid_obj_count += 1    	
 	#The ball: velX should be non zero
-	elif VelX != 0:
+	elif velX != 0:
 	    ballX, ballY, ballVX, ballVY = x, y, velX, velY
 	    valid_obj_count += 1
 	#The opponent: oppX should be near 17 and velX should be 0
@@ -77,5 +77,5 @@ def process_state(old_state, raw_state):
 	return is_valid_frame, old_state
     else:
 	is_valid_frame = True
-	new_state = #TBD
+	new_state = [ballX - playerX, ballY - playerY, ballVX, ballVY]
     	return is_valid_frame, new_state
