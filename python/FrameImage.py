@@ -6,13 +6,17 @@ import time
 
 class FrameImage():
 
-    FPS = 30
+    FPS = 25
     WINDOW_NAME = "frame"
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, video_fname = None):
         self.width = width
         self.height = height
         cv2.namedWindow(self.WINDOW_NAME)
+        self.video_writer = None
+        if video_fname is not None:
+            fourcc = cv2.cv.CV_FOURCC('M','J','P','G')
+            self.video_writer = cv2.VideoWriter(video_fname, fourcc, self.FPS, (width, height))
         print "Initialized window with dimensions", width, "X", height
 
     # src: http://stackoverflow.com/questions/9710520/opencv-createimage-function-isnt-working
@@ -58,10 +62,14 @@ class FrameImage():
         # invert color
         image = cv2.merge(np.subtract(255, cv2.split(image)))
         cv2.imshow(self.WINDOW_NAME, image)
+        if self.video_writer is not None:
+            self.video_writer.write(image)
         self.snooze() # needs to call to update correctly
 
     def close(self):
         cv2.destroyAllWindows()
+        if self.video_writer is not None:
+            self.video_writer.release()
 
 
 if __name__ == "__main__":
