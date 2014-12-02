@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     if(!testing)
         disp_screen = comm.getBool();
     bool proc_screen = true;
-    ale.loadROM(rom_file, disp_screen, proc_screen);
+    ale.loadROM(rom_file, false, proc_screen); // TODO - second param disp_screen?
 
     // send initial greeting and set of valid actions
     vector<string> legal_actions;
@@ -57,6 +57,13 @@ int main(int argc, char** argv)
         legal_actions.push_back(to_string(*it));
     }
     comm.sendMessage(legal_actions);
+
+    // if displaying screen, also send screen width and height
+    if(disp_screen)
+    {
+        comm.sendMessage(to_string(ale.screen_width));
+        comm.sendMessage(to_string(ale.screen_height));
+    }
 
     // play n episodes
     int episode = 0;
@@ -92,6 +99,21 @@ int main(int argc, char** argv)
                 cout << ale.visProc->self_id << endl;
             }
 
+            // if displaying screen and not testing, send all the pixel values
+            //if(disp_screen && enable_comm)
+            {
+                string pixels = "";
+                for(int y=0; y<ale.screen_height; y++)
+                {
+                    for(int x=0; x<ale.screen_width; x++)
+                    {
+                        uInt8 pixel = ale.screen_matrix[y][x];
+                        pixels += to_string(pixel) + " ";
+                    }
+                }
+                comm.sendMessage(pixels);
+            }
+
             // get an action selection from python
             int choice = comm.getAction();
             if(testing)
@@ -115,7 +137,7 @@ int main(int argc, char** argv)
                         {
                             uInt8 pixel = ale.screen_matrix[x][y];
                             if(pixel > 0)
-                                cout << "X";
+                                cout << pixel / 26;
                             else
                                 cout << " ";
                         }

@@ -43,6 +43,8 @@ string ALEComm::getMessage()
         cin >> msg;
     }
     cin >> msg;
+    //cerr << "GOT MESSAGE: " << msg << endl;
+    // TODO - buggy (only gets first letter?)
     return msg;
 }
 
@@ -61,7 +63,7 @@ bool ALEComm::getBool()
 {
     if(!enabled)
         return false;
-    if(getMessage() == "True")
+    if(getMessage() == "T") // TODO - True not T
         return true;
     else
         return false;
