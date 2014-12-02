@@ -100,14 +100,14 @@ int main(int argc, char** argv)
             }
 
             // if displaying screen and not testing, send all the pixel values
-            if(disp_screen && enable_comm)
+            //if(disp_screen && enable_comm)
             {
                 string pixels = "";
                 for(int y=0; y<ale.screen_height; y++)
                 {
                     for(int x=0; x<ale.screen_width; x++)
                     {
-                        uInt8 pixel = ale.screen_matrix[x][y];
+                        uInt8 pixel = ale.screen_matrix[y][x];
                         pixels += to_string(pixel) + " ";
                     }
                 }
