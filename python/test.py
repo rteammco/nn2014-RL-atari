@@ -1,6 +1,7 @@
 # Test the ALEInterface object.
 
 import sys
+import os
 import random
 from ALEInterface import ALEInterface
 import cv2
@@ -17,6 +18,10 @@ if len(sys.argv) > 1:
 else:
     print "Use: $ python test.py game_name [disp]"
     exit(0)
+
+
+# compile the c++ code
+os.system("cd ..; make")
 
 
 interface = ALEInterface(game, disp_screen)
