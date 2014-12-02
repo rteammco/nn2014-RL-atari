@@ -51,6 +51,12 @@ class FrameImage():
         if pixels is None:
             return
         image = self.get_image_from_pixels(pixels)
+        # resize
+        w = image.shape[1] * 3
+        h = image.shape[0] * 3
+        image = cv2.resize(image, (w, h))
+        # invert color
+        image = cv2.merge(np.subtract(255, cv2.split(image)))
         cv2.imshow(self.WINDOW_NAME, image)
         self.snooze() # needs to call to update correctly
 
