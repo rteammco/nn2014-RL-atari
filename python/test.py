@@ -3,9 +3,10 @@
 import sys
 import random
 from ALEInterface import ALEInterface
+import agent
+from config import *
 
-
-#game = "space_invaders"
+game = "pong"
 if len(sys.argv) > 1:
     game = sys.argv[1]
     if len(sys.argv) > 2 and "disp" in sys.argv[2]:
@@ -23,20 +24,35 @@ actions = interface.get_valid_actions()
 interface.start_new_game()
 frame = 0
 #A new agent here
+pongAgent = agent.Agent()
 
-while True:
+#Training episodes
+for eps in range(NUM_EPISODE):
+    #Initialize s
     s, r = interface.get_state_and_reward()
-    #pass s,r to agent
-
-
-    if not interface.game_running:
-        break
-    if frame % 100 == 0:
-        print s
     
-    #agent make decisions
-    a = random.choice(actions)
-    interface.do_action(a)
-    frame += 1
+    #Training steps
+    while True:
+        if not interface.game_running:
+            break
+        if frame % 10 == 0:
+            print(s)
+#	    print r
+        #agent chooses action according to e-greedy
+        action = random.choice(actions)
+	#action = pongAgent.selectAction(s)        
+        interface.do_action(action)
+		
+
+        s, r = interface.get_state_and_reward()
+        #update Q values
+	#pongAgent.updateNN()
+	
+  	
+        #s <- s_
+
+   	
+
+        frame += 1
 
 interface.close()
