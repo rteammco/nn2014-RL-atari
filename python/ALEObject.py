@@ -54,6 +54,8 @@ class ALEObject():
         self.age = int(params[8])
 
     def __str__(self):
-        return "Object " + str(self.unique_id) + ": " + str(self.box) + \
-            " -> (" + str(self.vel_x) + ", " + str(self.vel_y) + ")" + \
+        x, y = self.box.center()
+        return "Object " + str(self.unique_id) + ": " + \
+            "[" + str(x) + ", " + str(y) + "]" + " -> " + \
+            "(" + str(self.vel_x) + ", " + str(self.vel_y) + ")" + \
             " age = " + str(self.age)
