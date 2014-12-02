@@ -39,7 +39,7 @@ while True:
 
     if not interface.game_running:
         break
-    if frame % 100 == 0:
+    if frame % 10 == 0:
         print s
     
     #agent make decisions
