@@ -41,6 +41,7 @@ while True:
         break
     if frame % 100 == 0:
         print s
+        print "reward =", r
     
     #agent make decisions
     a = random.choice(actions)
