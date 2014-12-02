@@ -91,12 +91,10 @@ class ALEInterface():
             self.game_running = False
             return False
         self.cur_state = State(self.t)
-        num_objs = len(obj_params)/9 # TODO - define 9 elsewhere
-        print obj_params, num_objs
+        num_objs = len(obj_params)/9 # TODO - define 9 elsewhere?
         for i in range(num_objs):
-            obj_indx = i*9 # TODO - also same as above
-            print "obj:", obj_params[obj_indx:obj_indx+9]
-            obj = ALEObject(obj_params[obj_indx:obj_indx+9]) # TODO - again (+9)
+            obj_indx = i*9
+            obj = ALEObject(obj_params[obj_indx:obj_indx+9])
             self.cur_state.add_object(obj)
         self.t += 1
         return True
