@@ -12,22 +12,38 @@ START_GAME      <START_GAME>
 END_GAME        <END_GAME>
 
 STATES cpp {
+
     --send
     MESSAGE_START
     greetings
     MESSAGE_END
+
     --recv
     MESSAGE_START
-    use_screen
+    disp_screen
     MESSAGE_END
+
     --send
     MESSAGE_START
     valid_actions*
     MESSAGE_END
+
+    IF disp_screen {
+        --send
+        MESSAGE_START
+        screen_width
+        MESSAGE_END
+        --send
+        MESSAGE_START
+        screen_height
+        MESSAGE_END
+    }?
+
     {
         --recv
         START_GAME
         {
+
             --send
             MESSAGE_START
             OBJECTS {
@@ -42,15 +58,26 @@ STATES cpp {
                 OBJ_AGE
             }*
             MESSAGE_END
+
+            IF disp_screen {
+                --send
+                MESSAGE_START
+                PIXELS (single space-delimited string)
+                MESSAGE_END
+            }?
+
             --recv
             MESSAGE_START
             ACTION
             MESSAGE_END
+
             --send
             MESSAGE_START
             REWARD
             MESSAGE_END
+
         }*
+
         --send
         MESSAGE_START
         END_GAME
