@@ -6,12 +6,18 @@ from pybrain.supervised.trainers import BackpropTrainer
 from config import *
 import numpy
 import random
+from pybrain.tools.customxml.networkwriter import NetworkWriter
+from pybrain.tools.customxml.networkreader import NetworkReader
+
 #The learning agent for pong game
-class Agent():
-    def __init__(self):
+class Agent:
+    def __init__(self, loadWeightsFromFile, filename):
         #neural network as function approximator
         #Initialize neural network
-        self.nn = buildNetwork(4,20,3, bias = True)
+        if loadWeightsFromFile:
+	    self.nn = NetworkReader.readFrom(filename)
+	else:
+	    self.nn = buildNetwork(NODE_INPUT, NODE_HIDDEN, NODE_OUTPUT, bias = True)
     
     def updateNN(self, state, action, reward, state_new):
 	#learning target
@@ -19,32 +25,32 @@ class Agent():
 	    yi = reward
 	else: #transition states
 	    yi = reward + GAMMA * max(self.nn.activate(state_new))
-      	dataSet = SupervisedDataSet(len(state),1)
-  	dataSet.addSample(state, (yi))
+      	dataSet = SupervisedDataSet(NODE_INPUT,NODE_OUTPUT)
+	learn_target = self.nn.activate(state)
+	learn_target[action] = yi
+  	dataSet.addSample(state, learn_target) 
   	
   	trainer = BackpropTrainer(self.nn, dataSet)
   	trainer.train()
 
   	dataSet.clear()
 
-    def greedyAct(self,state):
-  	Qvalues = self.nn.activate(state)
-        action = numpy.argmax(Qvalues)
-        return action
+    def greedyAct(self,state): 
+        return numpy.argmax(self.nn.activate(state))
  
     def eGreedyAct(self, state):
       	#e-greedy action selection
 	if random.random() > EPSILON:
-	    action = greedyAct(state)
+	    action = self.greedyAct(state)
   	else:
 	    action = random.choice(ACTION_SET)
        	return action
 
     def reflexAct(self,state):
 	#state[1] is relBallY
-	if abs(state[1] - 0) < 3:
-	    action = NOOP
-	elif state[1] < 0:
+#	if abs(state[1] - 0) < 2:
+#	    action = 0 #NOOP
+	if state[1] < 0:
 	    action = RIGHT
 	else:
 	    action = LEFT 
@@ -77,5 +83,6 @@ def process_state(old_state, raw_state):
 	return is_valid_frame, old_state
     else:
 	is_valid_frame = True
-	new_state = [ballX - playerX, ballY - playerY, ballVX, ballVY]
+	new_state = [(ballY - playerY)/MAX_REL_Y]#, (ballVY)/MAX_BALL_VY]
+	#new_state = [(ballX - playerX)/MAX_REL_X, (ballY - playerY)/MAX_REL_Y, (ballVX)/MAX_BALL_VX, (ballVY)/MAX_BALL_VY]
     	return is_valid_frame, new_state
