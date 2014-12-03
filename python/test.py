@@ -1,5 +1,6 @@
 # Test the ALEInterface object.
 
+import signal
 import sys
 import os
 import random
@@ -13,13 +14,30 @@ from copy import deepcopy
 from pybrain.tools.customxml.networkwriter import NetworkWriter
 from pybrain.tools.customxml.networkreader import NetworkReader
 
+
 game = "pong"
+
+# cleanup routine for when exitting the program
+def cleanup(signal = None, frame = None):
+    if disp_screen:
+        fi.close()
+    interface.close()
+    print "Cleanup done."
+
+
+# exit nicely if ctrl+c
+signal.signal(signal.SIGINT, cleanup)
+
+
+# read arguments (ROM name, and display options)
 if len(sys.argv) > 1:
     game = sys.argv[1]
+    disp_screen = False
+    video_fname = None
     if len(sys.argv) > 2 and "disp" in sys.argv[2]:
         disp_screen = True
-    else:
-        disp_screen = False
+        if len(sys.argv) > 3:
+            video_fname = sys.argv[3]
 else:
     print "Use: $ python test.py game_name [disp]"
     exit(0)
@@ -27,7 +45,6 @@ else:
 
 # compile the c++ code
 #os.system("cd ..; make")
-
 
 
 #A new agent here
@@ -92,3 +109,5 @@ if disp_screen:
 #        if not interface.game_running:
 #            break
  
+cleanup()
+
