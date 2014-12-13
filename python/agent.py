@@ -55,7 +55,43 @@ class Agent:
 	else:
 	    action = LEFT 
         return action
+
+def process_state_pong(old_state, raw_state):
+    #get the relative position between ball and player
+    #ignore opponent now
+    playerX, playerY = 0, 0 
+    ballX, ballY, ballVX, ballVY = 0, 0, 0, 0
+    oppX, oppY, oppVX, oppVY = 0, 0, 0, 0
+    valid_obj_count = 0
+    is_valid_frame = False
     
+    for i in range(len(raw_state.objects)):
+        x,y = raw_state.objects[i].box.center()
+	velX, velY = raw_state.objects[i].vel_x, raw_state.objects[i].vel_y
+	#The player: playerX should be near 140 and velX should be 0
+	if abs(x - 140) <= 1 and velX == 0:
+	    playerX, playerY = x, y
+	    valid_obj_count += 1    	
+	#The ball: velX should be non zero
+	elif velX != 0:
+	    ballX, ballY, ballVX, ballVY = x, y, velX, velY
+	    valid_obj_count += 1
+	#The opponent: oppX should be near 17 and velX should be 0
+	#but these features do not seem to matter
+	else: pass
+	
+    if valid_obj_count < 2:
+	return is_valid_frame, old_state
+    else:
+	is_valid_frame = True
+	new_state = [playerY/MAX_Y, ballX/MAX_X, ballY/MAX_Y]
+#	new_state = [(ballY - playerY)/MAX_REL_Y]#, (ballVY)/MAX_BALL_VY]
+#	new_state = [(ballX - playerX)/MAX_REL_X, (ballY - playerY)/MAX_REL_Y, (ballVX)/MAX_BALL_VX, (ballVY)/MAX_BALL_VY]
+    	return is_valid_frame, new_state
+
+
+
+#old version    
 def process_state(old_state, raw_state):
     #get the relative position between ball and player
     #ignore opponent now
